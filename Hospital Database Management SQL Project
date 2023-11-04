@@ -1,0 +1,160 @@
+
+
+--Creating Table in Database
+
+CREATE TABLE Patient(
+
+Patient_ID INT NOT NULL,
+Patient_Name VARCHAR (100),
+Patient_Age INT,
+Patient_Address VARCHAR (100),
+Patient_Gender VARCHAR (100),
+Disease VARCHAR (100)
+
+);
+
+--Altering tables, Updating tables and Creating or Deleting coulumns
+
+ALTER TABLE Patient
+ADD doctor_ID INT NOT NULL;
+
+ALTER Table Patient
+DROP column Patient_Gender;
+
+--Adding Primary Key to Patient table
+
+ALTER TABLE Patient
+ADD CONSTRAINT Patient_PK
+Primary Key (Patient_ID)
+
+--Creating and adding Primary Keys to Doctor table and Room table
+
+CREATE TABLE Doctor(
+Doctor_ID INT NOT NULL
+Doctor_Name VARCHAR (100),
+Doctor_Age VARCHAR (100),
+Doctor_Gender VARCHAR (100),
+Doctor_Address VARCHAR (100)
+
+CONSTRAINT Doctor_PK Primary Key (Doctor_ID) 
+);
+
+
+CREATE TABLE Room(
+
+Room_No VARCHAR (50) NOT NULL,
+Room_Type VARCHAR (100),
+Room_Status VARCHAR (100), 
+
+CONSTRAINT Room_PK Primary Key (Room_No)
+);
+
+--Creating table Check_In_Out and adding Foreign Key, adding Foreign Key to Doctor_ID in Doctor table
+
+
+ALTER TABLE Patient
+ADD CONSTRAINT Patient_Doc_FK
+Foreign Key (Doctor_ID) References Doctor (Doctor_ID);
+
+
+CREATE TABLE Check_In_Out(
+
+Patient_ID INT NOT NULL,
+Room_No VARCHAR (50),
+Join_Date datetime,
+Leave_Date datetime,
+
+CONSTRAINT Pateint_In_FK
+Foreign Key (Patient_ID) References Patient (Patient_ID),
+
+CONSTRAINT Room_In_FK_FK
+FOREIGN KEY (Room_No) References Room (Room_No)
+);
+
+
+--Inserting, updating & deleting tables from Doctor & Patient tables
+
+
+Insert INTO Doctor
+Values (1, 'Kayen', 35, 'Male', 'California'),
+(2, 'Mark', 34, 'Male', 'California'),
+(3, 'Diana', 40, 'Female', 'California'),
+(4, 'Emy', 45, 'Female', 'California'),
+(5, 'David', 30, 'Male', 'California');
+
+INSERT INTO Patient
+Values (1,'Harry', 20,'California','Flu', 3),
+(2,'Jack', 30, 'California', 'COVID-19', 2),
+(3,'Wiliam', 25,'California', 'Virus C', 5),
+(4, 'Joe', 25, 'Califronia', 'Heart Disease', 4);
+
+INSERT INTO Room
+Values (1, 'Premium', 'Empty'),
+(2, 'Suite', 'Reserved'),
+(3, 'Sharing Room', 'Empty'),
+(4, 'Premium', 'Reserved'),
+(5, 'Day Care', 'Reserved'),
+(6, 'Premium', 'Empty');
+
+INSERT INTO Check_In_Out
+Values (1, 2, '2020-1-20', ''),
+(2,1, '2020-1-10', '2020-1-15'),
+(3,4, '2020-1-20', ''),
+(4,6, '2020-1-8', '2020-1-20');
+
+--Getting Rid of "Dummy Data" from database tables
+
+UPDATE Check_In_Out
+SET Leave_Date= NULL
+WHERE Patient_ID= 1 or Patient_ID= 3;
+
+--Deleting a row within table in database
+
+DELETE FROM Doctor
+WHERE Doctor_ID= 6;
+
+--Retrieving all data or specific data from tables within database
+
+SELECT*
+FROM Doctor
+
+SELECT *
+FROM Doctor
+WHERE Doctor_Age= 35
+
+SELECT Doctor_Name
+FROM Doctor
+
+SELECT Doctor_Name
+FROM Doctor
+WHERE Doctor_Age= 40
+
+
+--Retrieving data for patient name, doctor name and disease from different tables
+
+SELECT Patient_Name, Disease, Doctor_Name
+FROM Patient, Doctor
+WHERE Patient.Patient_ID= Doctor.Doctor_ID
+
+--Retrieving patient name, disease, join and leave dates, room number and room status if the leave date is NOT equal Null
+
+SELECT Patient.Patient_Name, Patient.Disease, Room.Room_No, Room.Room_Status, Check_In_Out.Join_Date, Check_In_Out.Leave_Date
+FROM Patient, Check_In_Out, Room
+WHERE Patient.Patient_ID= Check_In_Out.Patient_ID and Check_In_Out.Room_No=Room.Room_No and Check_In_Out.Leave_Date != '' 
+
+
+--Retrieving data using comparison operators in the conditions:
+
+SELECT Patient.Patient_Name, Patient.Patient_ID, Doctor, Doctor_Name, Patient.Disease, Doctor.Doctor_Age
+FROM Patient, Doctor
+WHERE Patient.Doctor_ID= Doctor.Doctor_ID and Doctor.Doctor_Age > 35
+
+Ordering Data using ORDER BY statement with descending order:
+
+SELECT Patient.Patient_ID, Patient.Patient_Name, Patient.Disease, Check_In_Out, Join_Date, Check_In_Out, Leave_Date, Room.Room_No, Room.Room_Status
+
+FROM Patient, Room, Check_In_Out
+
+WHERE Patient.Patient_ID= Check_In_Out.Patient_ID and Check_In_Out.Room_No= Room.Room_No
+
+ORDER BY Patient.Patient_ID DESC
