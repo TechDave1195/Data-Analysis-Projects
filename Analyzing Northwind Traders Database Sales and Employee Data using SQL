@@ -1,0 +1,101 @@
+--SQL Code for showing all rows and columns from Employees table:
+
+SELECT * FROM Employees
+
+--SQL Code to find customer orders in order to calculate the Sales Value per Order:
+
+SELECT * FROM Orderdetails
+Order by Orderid
+
+
+--SQL Code for Joining Employee and Order tables:
+
+SELECT lastname, firstname, orderid
+from employees 
+inner join
+orders
+on employees.employeeid= orders.employeeid
+order by lastname, firstname
+
+--When the same field name is used in more than one table SQL requires that the table name be used as a prefix:
+
+--SQL Code for Joining Employee, Orders, OrderDetails and Products tables:
+
+SELECT LastName, FirstName, Orders.OrderID, Products.ProductID,
+Quantity, Price
+FROM employees
+inner join orders
+on employees.employeeID= orders.employeeid
+inner join orderDetails
+on orders.orderid= orderdetails.orderid
+inner join products
+on orderdetails.productid= products.productid
+ORDER BY lastname, firstname
+
+--Example: Since employeeid was in both tables Employees, Orders within database the syntax in SQL must be employees.employeeid= orders.employeeid
+
+--The parenthesis in these functions are to specify the field in which the aggregation of data will apply
+--SQL Code for Aggregating Data to Calculate and Summarize Sales for each order sold to customer by employee:
+
+SELECT LastName, FirstName, Orders.OrderID, Products.ProductID,
+Quantity, Price, sum (quantity * price) as SalesAMT
+FROM employees
+inner JOIN orders
+ON employees.employeeid= orders.employeeid
+inner JOIN orderdetails
+ON orders.orderid= orderdetails.orderid
+inner JOIN products
+ON orderdetails.productid= products.productid
+GROUP BY orders.orderid
+
+--Answer to Business Problem/Question- “How can we identify five top performing employees who are eligible for bonuses based on number of sales generated.”
+--Proposed Solution: Two Reports
+--First Report: A list of orders with the five highest sales amounts with the names of the three employees responsible
+
+SQL Code:
+SELECT LastName, FirstName, Orders.OrderID, Products.ProductID,
+Quantity, Price, sum (quantity * price) as SalesAMT
+FROM employees
+inner JOIN orders
+ON employees.employeeid= orders.employeeid
+inner JOIN orderdetails
+ON orders.orderid= orderdetails.orderid
+inner JOIN products
+ON orderdetails.productid= products.productid
+GROUP BY orders.orderid
+ORDER BY SalesAMT desc
+LIMIT 5
+
+--First Report: Top Five Sales Order Amounts by employee
+--Steven Buchanan SalesAMT 15353.6, Quanitity 12,  Price 81,  Order ID 10372,  Product ID 20
+--Robert King SalesAMT 14366.5, Quantity 60, Price 18, Order ID 10424, Product ID 35
+--Margeret Peacock SalesAMT 14104, Quantity 50, Price 263.5, Order ID 10417, Product ID 38
+--Robert King SalesAMT 13427, Quantity 12, Price 21, Order ID 10353, Product ID 11
+--Margeret Peacock SalesAmt 9244.25, Quantity 30, Price 45.6, Order ID 10360, Product ID 28
+
+
+--Finding who the top five highest performing sales people are at Northwind Traders company
+--SQL Code:
+
+ SELECT LastName, FirstName, Orders.OrderID, Products.ProductID,
+Quantity, Price, sum (quantity * price) as SalesAMT
+FROM employees
+inner JOIN orders
+ON employees.employeeid= orders.employeeid
+inner JOIN orderdetails
+ON orders.orderid= orderdetails.orderid
+inner JOIN products
+ON orderdetails.productid= products.productid
+GROUP BY orders.orderid
+HAVING orders.orderid IN (10372, 10424, 10417, 10324, 10351)
+ORDER BY SalesAMT desc
+
+--Second Report: Top Five Highest Performing Sales People
+--Steven Buchanan SalesAMT 15353.6, Quanitity 12,  Price 81,  Order ID 10372,  Product ID 20
+--Robert King SalesAMT 14366.5, Quantity 60, Price 18, Order ID 10424, Product ID 35
+--Margeret Peacock SalesAMT 14104, Quantity 50, Price 263.5, Order ID 10417, Product ID 38
+--Anne Dodsworth SalesAMT 7698.45, Quantity 21, Price 17.45, Order ID 10324, Product ID 16
+--Nancy Davolio SalesAMT 7103.59, Quantity 20, Price 263.5, Order 10351, Product ID 38 
+
+
+
